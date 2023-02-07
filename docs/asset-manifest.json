@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/nuestros-viajes/static/css/main.d1f3b398.css",
+    "main.js": "/nuestros-viajes/static/js/main.272e9d8d.js",
+    "static/media/hero.jpg": "/nuestros-viajes/static/media/hero.f35238e8e1ede7d59121.jpg",
+    "index.html": "/nuestros-viajes/index.html",
+    "main.d1f3b398.css.map": "/nuestros-viajes/static/css/main.d1f3b398.css.map",
+    "main.272e9d8d.js.map": "/nuestros-viajes/static/js/main.272e9d8d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d1f3b398.css",
+    "static/js/main.272e9d8d.js"
+  ]
+}
