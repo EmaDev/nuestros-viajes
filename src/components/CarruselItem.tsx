@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import {AiOutlineFileImage} from "react-icons/ai";
+import { AiOutlineFileImage } from "react-icons/ai";
+import Swal from 'sweetalert2';
 
 
 const Contenedor = styled.div`
@@ -38,6 +39,11 @@ const PolaroirInterno = styled.div`
   display: flex;
   justify-content:center;
   align-items:center;
+
+  img{
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const Descripcion = styled.div`
@@ -61,24 +67,50 @@ const SinImagen = styled.div`
   font-size: 1.6rem;
   color: #575757;
 `;
-export const CarruselItem = () => {
-    return (
-        <Contenedor>
-            <Titulo>Laguna Esmeralda</Titulo>
-            <Polaroid>
-                <PolaroirInterno>
-                    <SinImagen>
-                        <p>Todavia no hay imagen</p>
-                        <AiOutlineFileImage size={"4rem"}/>
-                    </SinImagen>
-                </PolaroirInterno>
-            </Polaroid>
-            <Descripcion>
-                <p>
-                Descripcion de ejemplo ipsum sit amet consectetur adipisicing elit. Ipsum veniam voluptate  vervh cerv nvier
-                <span style={{}}>  ver mas...</span>
-                </p>
-            </Descripcion>
-        </Contenedor>
-    )
+
+interface Props {
+  titulo: string;
+  imagenes: string[];
+  descripcion: string;
+}
+export const CarruselItem = ({ titulo, imagenes, descripcion }: Props) => {
+
+  const generarSubcadenaDescripcion = () => {
+    let subcadena = descripcion; 
+    if(subcadena.length > 100){
+      subcadena = subcadena.substring(0, 99) + "..";
+    }
+    return subcadena;
+  }
+
+  const abrirModal = () => {
+    return Swal.fire({
+      title: titulo,
+      html: `<p style="font-size: 1.6rem">${descripcion}</p>`,
+      confirmButtonText: "cerrar",
+    })
+  }
+  return (
+    <Contenedor>
+      <Titulo>{titulo}</Titulo>
+      <Polaroid>
+        <PolaroirInterno>
+          {imagenes ?
+            <img src={imagenes[0]} />
+            :
+            <SinImagen>
+              <p>Todavia no hay imagen</p>
+              <AiOutlineFileImage size={"4rem"} />
+            </SinImagen>
+          }
+        </PolaroirInterno>
+      </Polaroid>
+      <Descripcion>
+        <p>
+          {generarSubcadenaDescripcion()}
+          <span onClick={abrirModal}> ver mas</span>
+        </p>
+      </Descripcion>
+    </Contenedor>
+  )
 }

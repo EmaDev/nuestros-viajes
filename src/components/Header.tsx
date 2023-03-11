@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import styled from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
 import 'animate.css';
+import { ViajeContext } from '../context/ViajeContext';
+import { formatearFecha } from '../helpers';
 
 const HeaderContainer = styled.header`   
-   height: 100vh;
+   height: 95vh;
    width: 100%;
    position: relative;
    overflow: auto;
 `;
-const Hero = styled.div`
+const Hero = styled.div<any>`
     margin: auto;
     padding: 2rem;
-    height: 100vh;
+    height: 95vh;
     width: 100%;
-    background-color: red;
-    background: url(${require("../assets/hero.jpg")});
+    background: url(${({ url }) => url});
     background-size: cover;
     background-repeat: no-repeat;
     background-position:center;
@@ -28,7 +29,7 @@ const Hero = styled.div`
     right: 0px;
     bottom: 0px;
     left: 0px;
-    background-color: rgba(89,159,203,0.6);
+    background-color: ${({ color }) => color || "#9f70c7"};
     }
 `;
 
@@ -42,15 +43,16 @@ const Contenido = styled.div`
    flex-direction: column;
 `;
 
-const Title = styled.h1`
+const Title = styled.h1<any>`
   color: rgba(0,0,0,0.4);
   font-weight: 900;
-  font-size: 7.5rem;
+  font-size: 7.3rem;
   text-transform: uppercase;
   background-color: #fff;
-  padding: .5rem 1.5rem;
-  margin: 0;
+  padding: .5rem;
+  margin: 0 1rem;
   position: relative;
+  text-align:center;
 `;
 const Subtitulo = styled.h3`
   font-size: 3rem;
@@ -77,9 +79,7 @@ const Temporizador = styled.div`
   margin: 1rem;
   color: rgba(0,0,0,0.4);
   div{
-    display:flex;
-    align-items: center;
-    justify-content: center;
+    margin-top: 1rem;
   }
   h5{
     font-weight: 500; 
@@ -88,27 +88,17 @@ const Temporizador = styled.div`
     margin: 0;
     margin-bottom: -1rem;
   }
-`;
-
-const Numero = styled.p`
-    font-family: 'Archivo Black', sans-serif;
-    font-size: 3.5rem;
-    font-weight: 900;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    display: flex;
-    align-items:center;
-`;
-const Separador = styled.span`
-   margin: auto 8px;
-   font-size: 30px;
-   font-weight: 900;
+  p{
+    margin: 1rem 0;
+    text-align:center;
+    font-weight: 600;
+    font-size: 2.2rem;
+  }
 `;
 
 const Desliza = styled.div`
   position:absolute;
-  bottom: 1rem;
+  bottom: 2rem;
   right: 0;
   left: 0;
   margin: auto;
@@ -124,65 +114,29 @@ const Desliza = styled.div`
   animation-delay: 2s;
 `;
 export const Header = () => {
-    const [timerState, setTimerState] = useState({ dias: '00', horas: '00', minutos: '00', segundos: '00' });
 
-    useEffect(() => {
-        const actual = new Date();
-        if (actual.getDate() >= 9) {
-            //clearInterval(intervalo);
-            setTimerState({
-                segundos: "00",
-                minutos: "00",
-                horas: "00",
-                dias: "0",
-            })
-        } else {
-            let iteracion = 1000;
-            const intervalo = setInterval(() => {
-                setTimer(new Date(2023, 1, 25));
-                if (iteracion === 1000) {
-                    iteracion = 60000;
-                }
-            }, iteracion);
-        }
-    }, []);
+  const { viajeSeleccionado } = useContext(ViajeContext);
 
-    const setTimer = (fechaFin: any) => {
-        const hoy: any = new Date();
-        const diferencia = (fechaFin - hoy + 1000) / 1000;
-        setTimerState({
-            segundos: ("0" + Math.floor(diferencia % 60)).slice(-2),
-            minutos: ("0" + Math.floor(diferencia / 60 % 60)).slice(-2),
-            horas: ("0" + Math.floor(diferencia / 3600 % 24)).slice(-2),
-            dias: Math.floor(diferencia / (3600 * 24)).toString(),
-        })
-    }
-    return (
-        <HeaderContainer>
-            <Hero />
-            <Contenido>
-                <Subtitulo>Nuestro viaje</Subtitulo>
-                <Title>Ushuaia
-                    <FechaText>2023</FechaText>
-                </Title>
-                <Temporizador>
-                    <h5>* Tiempo restante *</h5>
-                    <div>
-                        <Numero>{timerState.dias}<Separador>:</Separador></Numero>
-                        <Numero>{timerState.horas}<Separador>:</Separador></Numero>
-                        <Numero>{timerState.minutos}<Separador>:</Separador></Numero>
-                        <Numero>{timerState.segundos}</Numero>
-                    </div>
-                </Temporizador>
-
-            </Contenido>
-            <Desliza>
-                <IoIosArrowDown />
-                <IoIosArrowDown />
-                <IoIosArrowDown />
-                <IoIosArrowDown />
-                <IoIosArrowDown />
-            </Desliza>
-        </HeaderContainer>
-    )
+  return (
+    <HeaderContainer>
+      <Hero url={viajeSeleccionado.imagen} color={viajeSeleccionado.colorFondo} />
+      <Contenido>
+        <Subtitulo>Nuestros viajes</Subtitulo>
+        <Title>{viajeSeleccionado.lugar}
+          <FechaText>{viajeSeleccionado.fecha.getFullYear()}</FechaText>
+        </Title>
+        <Temporizador>
+          <h5>* Fecha del viaje *</h5>
+          <p>{formatearFecha(viajeSeleccionado.fecha)}</p>
+        </Temporizador>
+      </Contenido>
+      <Desliza>
+        <IoIosArrowDown />
+        <IoIosArrowDown />
+        <IoIosArrowDown />
+        <IoIosArrowDown />
+        <IoIosArrowDown />
+      </Desliza>
+    </HeaderContainer >
+  )
 }

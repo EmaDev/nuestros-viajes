@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -6,11 +6,11 @@ import { Pagination } from "swiper";
 import styled from 'styled-components';
 import { CarruselItem } from "./CarruselItem";
 import { AgregarItem } from "./AgregarItem";
+import { ViajeContext } from "../context/ViajeContext";
 
 const Contendor = styled.section`
   width: 100%;
   height: 100vh;
-
   .swiper {
     width: 100%;
     height: 100%;
@@ -47,33 +47,46 @@ const Contendor = styled.section`
   
   .swiper-pagination-bullet-active {
     color: #fff;
-    background: #007aff;
+    background: #ae70c7;
   }
   
 `;
 
 export const Carrusel = () => {
-    const pagination = {
-        clickable: true,
-        renderBullet: function (index:number, className:string) {
-            return '<span class="' + className + '">' + (index + 1) + "</span>";
-        },
-    };
+  const { viajeSeleccionado } = useContext(ViajeContext);
+  const pagination = {
+    clickable: true,
+    renderBullet: function (index: number, className: string) {
+      return '<span class="' + className + '">' + (index + 1) + "</span>";
+    },
+  };
 
-    return (
-        <Contendor>
-            <Swiper
-                pagination={pagination}
-                modules={[Pagination]}
-                className="mySwiper swipperContenedor"
-            >
-                <SwiperSlide>
-                    <CarruselItem/>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <AgregarItem/>
-                </SwiperSlide>
-            </Swiper>
-        </Contendor>
-    );
+  if (viajeSeleccionado.data.length < 1) {
+    return (<></>);
+  }
+  return (
+    <Contendor>
+      <Swiper
+        pagination={pagination}
+        modules={[Pagination]}
+        className="mySwiper swipperContenedor"
+      >
+
+        {viajeSeleccionado.data.map((polaroid, i) => (
+          <SwiperSlide key={i}>
+            <CarruselItem
+              titulo={polaroid.titulo}
+              imagenes={polaroid.imagenes}
+              descripcion={polaroid.descripcion}
+            />
+          </SwiperSlide>
+
+        ))}
+
+        <SwiperSlide>
+          <AgregarItem />
+        </SwiperSlide>
+      </Swiper>
+    </Contendor>
+  );
 }
